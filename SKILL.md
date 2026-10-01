@@ -2,7 +2,7 @@
 name: spark
 description: >-
   use this whenever framing work or emitting agent context — SPARK
-  meta-framework (Stack, Productization, Art/taste, Rumblings, Knowledge);
+  meta-framework (Stack, Productization, Art/taste, Risks and Rumblings, Knowledge);
   shapes output only, never changes the task; default when it fits;
   also when the caller says "make a Spark pin to do X" (or close variants):
   create a GitHub issue labeled pin whose body uses one SPARK heading per letter
@@ -24,8 +24,10 @@ The wrapper or shape to the outside world: who sees it, who works with it, who i
 ## A — Art / direction / taste
 Front-end: art direction. Coding: performant, elegant, small extensions to working code, deep black-box modules with predictable behavior and low demand on their surroundings, modularity.
 
-## R — Rumblings
-As-of date. Frontier software-engineering developments via X and the latest arXiv — one line or link plus a short synopsis each. Awareness only: never argue against the SPARK, and never send agents chasing alternatives from rumblings.
+## R — Risks and Rumblings
+**Risks:** Sketch risk pictures along the axes appropriate to the task, such as likelihood, impact, time horizon, and reversibility, across technical, product, and organizational concerns. Include the risks exposed to us by frontier developments. Give special importance to **bitter lesson risk**: bespoke techniques and hand-engineered expertise may be overtaken by general methods that scale with compute. Call out the riskier sides of rumblings so we remain wary of them.
+
+**Rumblings:** Actual beneficial frontier software-engineering developments that are encroaching or already upon us as of late. Include an as-of date; draw from X and the latest arXiv — one line or link plus a short synopsis each. Awareness only: never argue against the SPARK, and never send agents chasing alternatives from rumblings.
 
 ## K — Knowledge sources
 A short index: repos, docs, APIs, chat artifacts, scholarly articles (for example arXiv and the Apple ML research page as first-class). Subheadings are fine. Loose structure — images, videos, posts, screenshots, links, paths, PR numbers, and prose are all allowed.
@@ -49,7 +51,7 @@ When the caller says **"make a Spark pin to do X"** (or close variants such as "
 ## A — Art / direction / taste
 …
 
-## R — Rumblings
+## R — Risks and Rumblings
 …
 
 ## K — Knowledge sources
