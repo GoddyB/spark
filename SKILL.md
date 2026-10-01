@@ -1,17 +1,21 @@
 ---
 name: spark
 description: >-
-  use this whenever framing work or emitting agent context — SPARK
-  meta-framework (Stack, Productization, Art/taste, Risks and Rumblings, Knowledge);
-  shapes output only, never changes the task; default when it fits;
-  also when the caller says "make a Spark pin to do X" (or close variants):
-  create a GitHub issue labeled pin whose body uses one SPARK heading per letter
+  use this whenever framing work or emitting agent context — SPARK is a general
+  meta-framework (Stack, Productization, Art/taste, Risks and Rumblings, Knowledge)
+  for coding work, org work, and any other turn or task, not just issues or PRs.
+  When invoked, imbue that turn/task's output with all SPARK points; when invoked
+  on an issue or when making a Spark issue, cover those points too.
+  Shapes output, response, or work pattern only, never changes the task;
+  default when it fits. Also when the caller says "make a Spark pin to do X"
+  (or close variants): create a GitHub issue labeled pin whose body uses one
+  SPARK heading per letter
 ---
 SPARK is compatible with other skills, does not trample them, and only adds context.
 
 **Rule:** SPARK never changes the task at hand — it only shapes the output, response, or work pattern.
 
-**Org default:** Prefer SPARK-shaped output whenever it fits, even when the caller does not invoke this skill by name.
+**Org default:** Prefer SPARK-shaped output whenever it fits, across coding work, org work, and other turns or tasks, even when the caller does not invoke this skill by name.
 
 SPARK is a meta-framework, not a framework. Sections in order:
 
