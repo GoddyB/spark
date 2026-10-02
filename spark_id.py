@@ -8,93 +8,14 @@ import json
 import re
 import sys
 from collections.abc import Iterable
+from dataclasses import dataclass, field
 from pathlib import Path
 
 _ID_RE = re.compile(r"^[0-9a-f]{16}$")
 
 
-class SparkId:
-    """16 lowercase hexadecimal characters. Callers do not build this."""
-
-    __slots__ = ("_hex",)
-
-    def __init__(self) -> None:
-        raise TypeError("SparkId cannot be constructed by callers")
-
-    def __str__(self) -> str:
-        return self._hex
-
-    def __eq__(self, other: object) -> bool:
-        """Not equal to str."""
-        if not isinstance(other, SparkId):
-            return NotImplemented
-        return self._hex == other._hex
-
-    def __hash__(self) -> int:
-        return hash(self._hex)
-
-
-def _spark_id(hex_digits: str) -> SparkId:
-    if not isinstance(hex_digits, str) or _ID_RE.fullmatch(hex_digits) is None:
-        raise SparkFileError("id must be 16 lowercase hex characters")
-    sid = object.__new__(SparkId)
-    sid._hex = hex_digits
-    return sid
-
-
 class SparkFileError(Exception):
     """A file or a connect input broke the format or the id rule."""
-
-
-class Spark:
-    """One SPARK record. question and answer are exact code points. id is derived."""
-
-    __slots__ = ("_question", "_answer", "_id")
-
-    def __init__(self) -> None:
-        raise TypeError("use Spark.create")
-
-    @classmethod
-    def create(cls, question: str, answer: str) -> Spark:
-        """Return the Spark for these exact strings.
-
-        A lone surrogate has no UTF-8 preimage and raises SparkFileError.
-        """
-        if not isinstance(question, str) or not isinstance(answer, str):
-            raise TypeError("question and answer must be str")
-        try:
-            digest = hashlib.sha256(_preimage(question, answer)).hexdigest()
-        except UnicodeEncodeError as exc:
-            raise SparkFileError("preimage is not UTF-8") from exc
-        spark = object.__new__(cls)
-        spark._question = question
-        spark._answer = answer
-        spark._id = _spark_id(digest[-16:])
-        return spark
-
-    @property
-    def question(self) -> str:
-        return self._question
-
-    @property
-    def answer(self) -> str:
-        return self._answer
-
-    @property
-    def id(self) -> SparkId:
-        return self._id
-
-    def __eq__(self, other: object) -> bool:
-        if not isinstance(other, Spark):
-            return NotImplemented
-        return (
-            self._question == other._question
-            and self._answer == other._answer
-            and self._id == other._id
-        )
-
-    def __hash__(self) -> int:
-        return hash((self._question, self._answer, self._id))
 
 
 def _preimage(question: str, answer: str) -> bytes:
@@ -106,12 +27,30 @@ def _preimage(question: str, answer: str) -> bytes:
     ).encode("utf-8")
 
 
+@dataclass(frozen=True)
+class Spark:
+    """One immutable SPARK record. Its id is derived from its exact strings."""
+
+    question: str
+    answer: str
+    id: str = field(init=False)
+
+    def __post_init__(self) -> None:
+        if not isinstance(self.question, str) or not isinstance(self.answer, str):
+            raise TypeError("question and answer must be str")
+        try:
+            digest = hashlib.sha256(_preimage(self.question, self.answer)).hexdigest()
+        except UnicodeEncodeError as exc:
+            raise SparkFileError("preimage is not UTF-8") from exc
+        object.__setattr__(self, "id", digest[-16:])
+
+
 def load(path: Path) -> tuple[Spark, ...]:
     """Read one spark.json file into Sparks, in array order.
 
     Does not search parent or child directories and does not write.
     An empty array returns (). JSON errors, OS errors, shape errors,
-    and SparkFileError from create raise SparkFileError.
+    and SparkFileError from Spark construction raise SparkFileError.
     Does not return a partial tuple.
     """
     if not isinstance(path, Path):
@@ -131,7 +70,7 @@ def load(path: Path) -> tuple[Spark, ...]:
     if not isinstance(data, list):
         raise SparkFileError("expected a JSON array")
     found: list[Spark] = []
-    seen: set[SparkId] = set()
+    seen: set[str] = set()
     for item in data:
         if not isinstance(item, dict) or set(item) != {
             "type",
@@ -156,8 +95,8 @@ def load(path: Path) -> tuple[Spark, ...]:
             raise SparkFileError(
                 "type must be SPARK, question and answer must be strings, and id must be 16 lowercase hex characters"
             )
-        built = Spark.create(question, answer)
-        if str(built.id) != stored:
+        built = Spark(question, answer)
+        if built.id != stored:
             raise SparkFileError("stored id does not match the record")
         if built.id in seen:
             raise SparkFileError("duplicate id")
@@ -178,7 +117,7 @@ def connect(*groups: Iterable[Spark]) -> tuple[Spark, ...]:
     Does not read the filesystem and does not rehash.
     connect(connect(a, b), a) == connect(a, b) when a and b do not conflict.
     """
-    first: dict[SparkId, Spark] = {}
+    first: dict[str, Spark] = {}
     ordered: list[Spark] = []
     for group in groups:
         for spark in group:
