@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/GoddyB/spark/blob/main/spark.schema.json",
+  "title": "spark.json",
+  "description": "A JSON array of SPARK records. spark_id.py checks each id. This schema does not describe the agent skill in SKILL.md.",
+  "type": "array",
+  "items": { "$ref": "#/$defs/spark" },
+  "$defs": {
+    "spark": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "question", "answer", "id"],
+      "properties": {
+        "type": { "const": "SPARK" },
+        "question": { "type": "string" },
+        "answer": { "type": "string" },
+        "id": { "type": "string", "pattern": "^[0-9a-f]{16}$" }
+      }
+    }
+  }
+}
