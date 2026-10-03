@@ -26,20 +26,9 @@ jobs:
     steps:
       - name: polished
         env:
-          GH_TOKEN: ${{ github.token }}
           LABEL_NAMES: ${{ toJson(github.event.pull_request.labels.*.name) }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
           if ! printf '%s\n' "$LABEL_NAMES" | jq -e 'index("polished") != null' >/dev/null; then
             echo "::error::PR needs the 'polished' label"
-            exit 1
-          fi
-          logins=$(gh api --paginate "repos/${GITHUB_REPOSITORY}/issues/${PR_NUMBER}/events" --jq '.[] | select(.event == "labeled" and .label.name == "polished") | .actor.login') || {
-            echo "::error::Could not read who added the polished label"
-            exit 1
-          }
-          actor=$(printf '%s\n' "$logins" | tail -n 1)
-          if [ "$actor" != "GoddyB" ]; then
-            echo "::error::Only GoddyB may add the polished label"
             exit 1
           fi

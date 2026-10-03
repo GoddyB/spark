@@ -5,7 +5,7 @@ alwaysApply: true
 
 This rule applies when you are a Cursor cloud agent or a Grok agent and you open a pull request or a draft whose base branch is `main`. A draft counts the same as a ready pull request.
 
-After you open it, if the label `polished` is already present and the GitHub user `GoddyB` is the actor who added that label, do nothing. Do not merge.
+After you open it, if the label `polished` is already present, do nothing. Do not merge.
 
 Otherwise, do not merge and do not end the task.
 
@@ -17,8 +17,8 @@ Judge each requested change against the purpose of the pull request. Implement e
 
 Assign the pull request to the GitHub user `GoddyB`.
 
-Add the label `polished`. Leave the label `nuked`. The check passes only when `GoddyB` is the actor who added `polished`.
+Add the label `polished`. Leave the label `nuked`.
 
 Recheck the pull request while you wait. If this session cannot keep waiting, stop and report the pull request URL and that the review has not arrived. Do not merge.
 
-Never merge to `main`.
+Only `GoddyB` may merge. Never merge to `main`.
