@@ -1,0 +1,19 @@
+name: polished
+
+on:
+  pull_request:
+    types: [opened, synchronize, labeled, unlabeled, ready_for_review, reopened]
+    branches: [main]
+
+permissions:
+  pull-requests: read
+
+jobs:
+  polished:
+    name: polished
+    runs-on: ubuntu-latest
+    steps:
+      - name: polished
+        env:
+          LABEL_NAMES: ${{ toJson(github.event.pull_request.labels.*.name) }}
+        run: printf '%s\n' "$LABEL_NAMES" | jq -e 'index("polished") != null' >/dev/null
